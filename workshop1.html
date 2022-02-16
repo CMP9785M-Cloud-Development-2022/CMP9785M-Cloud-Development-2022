@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	   <script type="text/javascript" src="js/scripts/shCore.js"></script>
+	<script type="text/javascript" src="js/scripts/shBrushCpp.js"></script>
+     <link type="text/css" rel="stylesheet" href="js/styles/shCoreDefault.css"/>
+</head>
+
+<body>
+<h1>CMP9785M Workshop 1- Azure Pass and Development Environment Setup</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_image2.png" width="628" height="230" alt=""/></p>
+<p>&nbsp;</p>
+<p>This workshop is in two parts that cover setting up access to the Azure cloud platform and configuration of your development environment:</p>
+<p>Part 1 - Setting up your 'Azure for Students' subscription</p>
+<p>Part 2 - Setup development environment</p>
+<p>Part 3 - Test your Azure for Students subscription</p>
+<p>&nbsp;</p>
+<h2><strong>Part 1 - Setting up your 'Azure for Students' subscription</strong></h2>
+<p>In order to complete the module workshops and assessment you will need a free Azure for Students Subscription, no other cloud vendor is valid for the module so please ensure you only use Azure for all relevant work. You can only activate your free account using your <strong>university email address</strong>, no other email address can be used to activate the subscription so please do not attempt this. You can activate the subscription <a href="https://azure.microsoft.com/en-gb/free/students/">here.</a> </p>
+<p>When you have completed the registration navigate to <a href="https://portal.azure.com">https://portal.azure.com</a> , and sign in using your university login credentials. Next, check your Azure for Students subscription is active by selecting the menu ont he left by clicking the 'three lines' icon on the top left. Fro the menu that popsout select the 'Subscriptions' option and check you have an entry for the subscription as shown below. If you are having trouble activating your subscription please get help from the module team asap, it is your responsibility to activate your free subscription using your university email address, and it is mandatory to complete the assessment and carry out a large number of workshop tasks.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_image3.png" width="900" height="546" alt=""/></p>
+<h3>*Problems with Redeeming the Azure for Students Subscription</h3>
+<p>Some students may experience problems when trying to redeem the Azure for Students subscription. If this affects you, please email me and I will provide support during the online workshop session.. You can still carry on and do the remainder of today's workshop as the Azure subscription will not be used for a few weeks. </p>
+<p>&nbsp;</p>
+<h2>Part 2 - Setting up the development environment</h2>
+<p>The main development tool you will use is Visual Studio Code (VSC) with the required extensions for connecting to, and developing cloud services on Azure. The below guide walks you through the main steps of installing and configuring the required frameworks and VSC for use in the module, please do not use the 'Visual Studio', this is a completely different tool and not what we will be using in the module.</p>
+<h3>Frameworks &amp; Tools</h3>
+<p><strong>Frameworks</strong></p>
+<p>The main frameworks required are Microsoft .NET SDK Core 5.0.x (x64) and Microsoft .NET SDK Core 3.1.x - we need both versions for backwards compatability with some VSC extensions and libraries - please do not install newer versions if available (this lab was updated on 18th Feb 2021). Please download and install them for your Operating System, remember Windows is the recommended OS as this is what we support on our Lab machines.</p>
+<p>Download and Install Microsoft .NET SDK Core <strong>5.0.3</strong> (x64) <a href="https://dotnet.microsoft.com/download/dotnet/5.0">here,</a> see below screenshot for info:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_1.JPG" width="900" height="795" alt=""/></p>
+<p>&nbsp;</p>
+<p>Download and Install Microsoft .NET SDK Core <strong>3.1.12</strong> <a href="https://dotnet.microsoft.com/download/dotnet/3.1">here</a>, see screenshot befow for more info:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_2.JPG" width="900" height="730" alt=""/></p>
+<p>&nbsp;</p>
+<p><strong>Tools</strong></p>
+<p>We need several Azure supporting tools to aid your development work. We may add more as the module progresses but for now you should install the Azure Functions Core Tools package and the Azure Storage Explorer. Download and install the Azure Functions Core Tools <a href="https://go.microsoft.com/fwlink/?linkid=2135274">here</a> and the Azure Storage Explorer <a href="https://azure.microsoft.com/en-us/features/storage-explorer/">here.</a></p>
+
+<h3>Visual Studio Code</h3>
+<p>Please download VSC code from <a href="https://code.visualstudio.com/download">here.</a>. There are versions for Windows, Linux, and Mac. The workshops will be using the Windows version but the experience should be the same, unfortunately I cannot provide any support for installation/configuration issues with VSC on Linux or Mac. If using the Windows version please install the '<strong>user installer 64bit</strong>' version:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_3.JPG" width="900" height="512" alt=""/></p>
+<p>VSC is a highly extensible development tool with lots of extensions available. We will mainly be uses Azure focused extensions for developing serverless functions in C#. For this please follow the instructions below to install the required VSC extensions</p>
+<p><strong>C# Extension</strong></p>
+<p>As you will be writing serverless functions in C#, please follow the steps below to install the C# extension for VSC:</p>
+<p>1) Open VSC and click on the extensions icon (1) as shown below. (2) shows currently installed extensions - these may be different from yours, and (3) is where you search for extensions to install</p>
+<p>2) Install the C# extension by folowing steps in below screenshot, ensuring it is the official Mirosoft extension:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_5.JPG" width="900" height="464" alt=""/></p>
+<p>&nbsp;</p>
+<p>3) Install the Azure Account extension (it may already be installed by default):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_6.JPG" width="900" height="402" alt=""/></p>
+<p>&nbsp;</p>
+<p>4) Install the Azure IoT Tools extension:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_7.JPG" width="900" height="411" alt=""/></p>
+<p>&nbsp;</p>
+<p>5) Install the Azure Database extension:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_8.JPG" width="900" height="641" alt=""/></p>
+<p>&nbsp;</p>
+<p>6) Install the Azure Storage extension</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_9.JPG" width="900" height="568" alt=""/></p>
+<p>&nbsp;</p>
+<p>7) Finally, install the Azure Functions extension:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_10.JPG" width="900" height="460" alt=""/></p>
+<p>&nbsp;</p>
+<p>OK! That is all the extensions required for now but we may add more as the module progresses!</p>
+<h2>Part 3 - Azure Account Test from VSC</h2>
+<p>As you will do much of your development work in VSC, you will also carry out cloud-based testing (as well as local) of your code. In order to do this your VSC installation will need to be connected to your Azure for Students subscription via the Azure Account extension.</p>
+<p>In VSC, follow the steps below to connect to your Azure for Students subscription</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_11.JPG" width="539" height="648" alt=""/></p>
+<p><img src="images/workshop1_12.JPG" width="841" height="724" alt=""/></p>
+<p><img src="images/workshop1_13.JPG" width="866" height="487" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now return to VSC and you will see your university email address for Azure on bottom left:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_14.JPG" width="481" height="290" alt=""/></p>
+<p>&nbsp;</p>
+<p>Click on your email address and at the top of VSC it will display your Azure for Students subscription name and ID:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_15.JPG" width="847" height="256" alt=""/></p>
+<p>&nbsp;</p>
+<p>Finally, if you are using a shared machine then you should sign-out of Azure in VSC. You can do this by pressing [CTRL]+[SHIFT]+[P} to bring up the VSC command pallete and type in sign out to find the command from the Azure Account extension:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_16.JPG" width="816" height="165" alt=""/></p>
+<p>&nbsp;</p>
+<h2>Summary</h2>
+<p>At this point you should have your Azure for Students subscription setup as well as your VSC development environment with Visual Studio code. Please take the time to complete this workshop before next week's session. Next week you will set up an simulated IoT device that can send telemetry data to Azure, you will then set up a service app that will view the telemetry as it arrives as an event on Azure.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</body>
+	
+</html>
