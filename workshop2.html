@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	   
+ <link rel="stylesheet" href="highlight/styles/default.css">
+<script src="highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<h1>Workshop 2 - Simulated IoT Device for Cloud Messaging</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_16.png" width="1000" height="366" alt=""/></p>
+<p>&nbsp;</p>
+<p>This workshop is in three parts and covers setting up a simulated IoT device, a service application, and connecting to an Azure IoT Hub:</p>
+<p>Part 1 - Configuring  the simulated IoT Device</p>
+<p>Part 2 - Configuring the service app</p>
+<p>Part 3 - Independent Task - Coding the simulated device to produce different sensor data</p>
+<p>For context, this workshop will be focused on configuring and running a simluated IoT device written as C# console app. When the device runs it will generate mock sensor data and send it to an <a href="https://azure.microsoft.com/en-gb/services/iot-hub/">Azure IoT Hub</a> (more on these next week!) using the <a href="https://mqtt.org/">MQTT Protocol.</a> The Azure IoT hub consumes the sensor data but does not persistently store it, instead it can process and forward it through using other cloud services such as events and functions. The service app is also a C# console app. It connects to the Azure IoT Hub that the simulated device has sent the data to, and can display information on it. Read on for more.</p>
+<h2>Part 1 - Configuring  the Simulated IoT Device</h2>
+<p>As stated, the simulated device  is a C# console app. It uses the <a href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.devices.client.deviceclient?view=azure-dotnet">Microsoft.Azure.Devices.Client</a> class/namespace which is a device SDK for the Azure IoT hub. Real IoT devices such as speakers an intelligent thermostats would use this device SDK if connecting to an IoT hub.</p>
+<p>For this part of the workshop, you will use the default settings of the sim device  which is for producing temperature and humidity sensor data. Download the zip file <a href="https://www.dropbox.com/s/hznjz9v74mkmmqg/workshop2.zip?dl=0">here</a> that contains both the simulated device code and the service app code that you will use in part 2 of this workshop.</p>
+<p>You should extract the zip file into a folder where you have write access, I created a folder C:\CMP9785M\code\workshop 2\ on the C: drive </p>
+<p>The downloaded zip file when extracted will have two folders as below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_17.JPG" width="" height="" alt=""/></p>
+<p>&nbsp;</p>
+<p>Open the SimulatedDevice folder and then open the <strong>Program.cs</strong> file in VSC to get a better understanding of how it is constructed. Of note is line 29 which contains the connection string to a working Azure IoT Hub that belongs to the module delivery team staff:</p>
+<p>&nbsp;</p>
+<!--<p><img src="images/workshop1_18.JPG" width="1200" height="257" alt=""/></p>-->
+<p><img src="images/connectionstring_week2.png" width="1200" height="350" alt=""/></p>
+<p>&nbsp;</p>
+<p>This is the connection string the simulated device will use to send the sensor data. Note this connection string will not always be available to use, next week you will replace it with your own connection string when you create your own Azure Iot Hub. The next part of the code that is of interest is the generation of the sensor data and sending it to the Azure IoT Hub, as you can see in the code snippet below:</p>
+<pre><code class="cs">
+// Async method to send simulated telemetry
+        private static async Task SendDeviceToCloudMessagesAsync(CancellationToken ct)
+        {
+            // Initial telemetry values
+            double minTemperature = 20;
+            double minHumidity = 60;
+            var rand = new Random();
+
+            while (!ct.IsCancellationRequested)
+            {
+                double currentTemperature = minTemperature + rand.NextDouble() * 15;
+                double currentHumidity = minHumidity + rand.NextDouble() * 20;
+
+                // Create JSON message
+                string messageBody = JsonSerializer.Serialize(
+                    new
+                    {
+                        temperature = currentTemperature,
+                        humidity = currentHumidity,
+                    });
+                using var message = new Message(Encoding.ASCII.GetBytes(messageBody))
+                {
+                    ContentType = "application/json",
+                    ContentEncoding = "utf-8",
+                };
+
+                // Add a custom application property to the message.
+                // An IoT hub can filter on these properties without access to the message body.
+                message.Properties.Add("temperatureAlert", (currentTemperature > 30) ? "true" : "false");
+
+                // Send the telemetry message
+                await s_deviceClient.SendEventAsync(message);
+                Console.WriteLine($"{DateTime.Now} > Sending message: {messageBody}");
+
+                await Task.Delay(3000);
+            }
+        }
+</pre>
+<p>With a better understanding of how the simulated device works, you should be able to modify its code to produce different types of sensor data. You will do this in part 3 of this workshop.</p>
+<p>Next, open an elevated terminal (<a href="https://www.computerhope.com/jargon/e/elevated.htm">see here for Windows</a>). Navigate to the  SimulatedDevice folder, this was in the zip file you downloaded and extracted.  The image below shows an example path you need on a Windows machine, this path will be different on your own machine:</p>
+<p>&nbsp;</p>
+<p><img src="images/Workshop2-path_to_SimulatedDevice.png" width="900" height="301" alt=""/></p>
+<p>&nbsp;</p>
+<p>At the terminal (or command prompt) change the directory to the correct path on your machine:</p>
+<pre><code class="cs">
+cd C:\CMP9785M\code\workshop 2\SimulatedDevice
+</pre>
+<p>Now enter the below command to ensure the required packages are installed to run it:</p>
+<pre><code class="cs">
+dotnet restore
+</pre>
+<p>Your terminal window should look similar to below at this point:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop2_simulateddevice_dotnet_restore.jpg" width="979" height="392" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now its time to run the simulated device, enter the below command and it should run and start sending sensor data every 3 seconds to the specified Azure IoT Hub:</p>
+<pre><code class="cs">
+dotnet run
+</pre>
+<p><img src="images/workshop 2-Command Prompt - dotnet  run.jpg" width="979" height="392" alt=""/></p>
+<p>&nbsp;</p>
+<p>After several messages have been sent containing the sensor data, press [CTRL] + [c] in the terminal window to stop the device but leave the window open for now.</p>
+<p>In the next part you are going to run a service app that reads the sensor data from the Azure IoT Hub.</p>
+<h2>Part 2 - Configuring  the service application</h2>
+<p>The service application connects to the service-side Events endpoint of an Azure IoT Hub. The application receives the device-to-cloud messages sent from your simulated device via the IoT Hub. An IoT Hub service application (app) typically runs in the cloud to receive and process device-to-cloud messages. We are going to use it in this workshop for viewing and general debugging purposes. Follow the steps below:</p>
+<p>1) Open another terminal window (same as you did earlier)</p>
+<p>2) This time get the path of the ReadD2cMessages folder that you download as part of the zip file earlier</p>
+<p>3) In the terminal windows enter the below command to change the directory to the ReadD2cMessages folder (note your path will be different):</p>
+<pre><code class="cs">
+cd C:\CMP9785M\code\workshop 2\ReadD2cMessages
+</code>
+</pre>
+<p>4) Now enter the below command to ensure the required packages are installed to run it:</p>
+<pre><code class="cs">
+dotnet restore
+</pre>
+<p>5) Your terminal window should look similar to below at this point:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop 2-Reader_Command Prompt - dotnet  run.jpg" width="979" height="392" alt=""/></p>
+<p>&nbsp;</p>
+<p>6) In order to run the service app we need to pass it the Azure IoT Hub endpoint string as a parameter, more on this next week! enter the following command on the command line:
+<pre><code class="cs">
+dotnet run -- -c Endpoint=sb://ihsuprodlnres020dednamespace.servicebus.windows.net/;SharedAccessKeyName=service;SharedAccessKey=CEF2WbydSaLn16mZhBJB6iGlKXtjaHRT+5TBvvNcB4c=;EntityPath=iothub-ehub-philstempo-17319764-667a18c69a
+</pre>
+<p>You should see some data from it that was sent recently (from you running the simulated device previously), this is the temperature and humidity sensor data that was sent:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop 2-Reader_Command Prompt - dotnet  run output.jpg" width="979" height="392" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, go back to the terminal window for the simulated device and start running it again by entering the <strong>dotnet run</strong> command again. With both terminal windows side-by-side as below, you will be able to watch the simulated device send sensor data to the Azure IoT Hub. Each time sensor data arrives in the IoT hub it triggers an event that the service app can read and display in its terminal window. You will be able to view live sensor data as it arrives in the IoT Hub:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_24.JPG" width="1500" height="636" alt=""/></p>
+<p>&nbsp;</p>
+<p>OK, now you should have a basic understanding of the simulated device, the service app, and what an Azure IoT Hub is. We will look at Azure IoT Hubs in more detail next week.</p>
+<p>In each of the terminal windows press and hold [CTRL+[c] to stop them running gracefully, then close both terminal windows. The next part of the workshop is not guided and is an independent programming task.</p>
+<p>&nbsp;</p>
+<h2>Part 3 Independent Task - Modify the simulated device code</h2>
+<p>This part of the workshop is focused on an independent task to modify the simulated device code. The task you need to complete for this is to modify the code to include the following sensors, some suggested datatypes have been included for some sensors:</p>
+<p>light switch on or off - boolean</p>
+<p>fan speed - integer with a minimum/maximum value</p>
+<p>ambient light sensor</p>
+<p>electricity monitor</p>
+<p>To do the above you must add new code as well as use identifiable variable names, and suitable randomisation/scaling.</p>
+<p>For your assessment work, you may wish to consider what type of simulated IoT sensor data you will use and modify the simulated device code accordingly.</p>
+<p>&nbsp;</p>
+</body>
+</html>
