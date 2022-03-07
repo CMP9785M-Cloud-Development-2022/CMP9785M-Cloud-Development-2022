@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	   <script type="text/javascript" src="js/scripts/shCore.js"></script>
+	<script type="text/javascript" src="js/scripts/shBrushCpp.js"></script>
+     <link type="text/css" rel="stylesheet" href="js/styles/shCoreDefault.css"/>
+</head>
+
+<body>
+<h1>Workshop 3 - IoT Cloud Services Connectivity and Development</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop3-1.JPG" width="600" height="337" alt=""/></p>
+<p>&nbsp;</p>
+<p>In last week's workshop you setup the simulated device console app and wrote some code to generate new sensors and values. This code was sent to Derek's Azure IoT hub where you viewed it being received by service console app that connected to hub and monitored it for events. Whenever a new sensor value was received by the IoT hub an event was triggered that the service app would read and display.</p>
+<p>Part 1 - Create an  Azure IoT Hub service on the cloud using your Azure for Students subscription</p>
+<p>Part 2 - Connect the simulated device conole app to your IoT Hub and send sensor to it using the MQTT protocol</p>
+<p>Part 3 - Independent task</p>
+<h2>Last Week - Simulated Device and Service App with Azure IoT Hub</h2>
+<p>You will need to use the simulated device and service app you installed and configured last week for use in this workshop. If you have not done workshop 2 yet or have the required apps ready to go then please return and complete workshop 2.</p>
+<h2>Part 1 - Azure IoT Hub</h2>
+<p>For this part of the workshop you will create a new resource on Azure in the form of an <a href="https://azure.microsoft.com/en-gb/services/iot-hub/">Iot Hub Service</a>. The hub facilitates bi-directional device-to-cloud telemetry data for which you will use to securely send temperature data from the simulated device.</p>
+<p>To get started login to your Azure account <a href="http://portal.azure.com/">here</a> using your university email credentials, remember you need an Azure for Students subscription, details are in workshop 1. When logged in click the Home button as shown below to ensure you are on the correct landing page:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image1.png" width="800" height="522" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, follow the simple steps below to create a new resource group. Resource groups provide a way to monitor, control access, provision and manage collections of services  that are required to run an application. It is best practice to create a resource group for each application. For example you may have two very different applications you wish to host in the cloud that each have their own dependent services, as such each application should have its own resource group. Now create your resource group that will group your IoT application and service code for the module:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image3.png" width="250" height="420" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_1new.PNG" width="900" height="730" alt=""/></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_2new.PNG" width="1000" height="754" alt=""/></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_3new.PNG" width="879" height="920" alt=""/></p>
+<p>&nbsp;</p>
+<p>After a minute or two your new resource group will be created, if you do not see it after a few minutes then hit the refresh button:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_4new.PNG" width="1000" height="519" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, you will need to create a new IoT Hub service as part of the new resource group you just created, follow the steps below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image8.png" width="284" height="501" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image9.png" width="500" height="333" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image10.png" width="600" height="819" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_5new.PNG" width="1000" height="738" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_6new.PNG" width="1000" height="734" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_7new.PNG" width="1000" height="1022" alt=""/></p>
+<p><img src="images/workshop3_8new.PNG" width="682" height="1016" alt=""/></p>
+<p>&nbsp;</p>
+<p>Your new Iot Hub service will now be created and deployed on the cloud under your specified resource group, this may take a few minutes to create so please wait. </p>
+<p>When the IoT hub is created you will next need to provision a device for the hub. This provisioned device will have a unique connection string that you will use for connecting the simulated device console app to your hub, the connection string will be added to the simulated device app's code, replacing the connection string you used in workshop 2. Essentially this is the way IoT devices such as  Amazon's Echo Dot are provisioned. They are programmed at the factory with a unique connection string that is used to call Amazon's servers when switced on. Extra details such as a users's Amazon account details can also be added to this connection string, so that if you purchase it on Amazon for yourself it can be pre-programmed to work with your Amazon account straight out of the box.</p>
+<p>Lets add a new device to your hub by following the steps below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image14.png" width="279" height="464" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image14.5.png" width="800" height="441" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image15.png" width="800" height="766" alt=""/></p>
+<p>&nbsp;</p>
+<p>Give the device your name followed by _simdevice for example for derek foster we use defoster_simdevice :</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_9new.PNG" width="800" height="1060" alt=""/></p>
+<p>&nbsp;</p>
+<p>Your IoT device should now be provisioned in your hub, click on it as shown below and copy the device connection string to a text file, you should also email yourself it. Please do not share this connection string with anyone as it belongs to your Azure account.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_10new.PNG" width="1000" height="486" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_11new.PNG" width="1000" height="568" alt=""/></p>
+<p>&nbsp;</p>
+<p>You must copy the <strong>Primary Connection String </strong>above for your newly added device and copy it to a text file for storing securely.</p>
+<p>OK - you now have an IoT hub and provisioned device that you can use for the remainder of the module for the workshop tasks, as well as for your assessment work if you choose to. You do not need to do this task again :) </p>
+<p>&nbsp;</p>
+<h2>Part 2 - Connect the simulated device to your IoT Hub</h2>
+<p>Open the SimulatedDevice folder and then open the <strong>Program.cs</strong> file in VSC to view the currently coded connection string. Replace this connection string with the one you copied from your IoT hub earlier.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_18.JPG" width="1200" height="257" alt=""/></p>
+<p></p>
+<h3>&nbsp;</h3>
+<p>With the new connection string added to the simulated device code it is now time to run it send sensor data to your own hub:</p>
+<p>Open an elevated terminal (<a href="https://www.computerhope.com/jargon/e/elevated.htm">see here for Windows</a>). Navigate to the  SimulatedDevice folder, this in the zip file you downloaded from workshop 2.  The image below shows the path you need on a Windows machine, this path will be different on your own machine:</p>
+<p>&nbsp;</p>
+<p><img src="images/Workshop2-path_to_SimulatedDevice.png" width="900" height="301" alt=""/></p>
+<p>&nbsp;</p>
+<p>At the terminal (or command prompt) change the directory to the correct path on your machine:</p>
+<pre><code class="cs">
+cd C:\CMP9785M\code\workshop 2\SimulatedDevice
+</pre>
+<p>Now enter the command below to ensure the required packages are installed to run it:</p>
+<pre><code class="cs">
+dotnet restore
+</pre>
+<p>Your terminal window should look similar to below at this point:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop2_simulateddevice_dotnet_restore.jpg" width="1094" height="640" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now its time to run the simulated device, enter the below command and it should run and start sending sensor data every 3 seconds to the specified Azure IoT Hub:</p>
+<pre><code class="cs">
+dotnet run
+</pre>
+<p><img src="images/workshop 2-Command Prompt - dotnet  run.jpg" width="1098" height="632" alt=""/></p>
+<p>&nbsp;</p>
+<p>With the command prompt window selected, prese [CTRL] +c to stop the simulated device app running - you may need to do this twice!</p>
+<p>Last week you used the service app to view the hub events that were triggered as you sent the simulated sensor data to it:</p>
+<p><img src="images/workshop1_23.JPG" width="1096" height="636" alt=""/></p>
+<p>&nbsp;</p>
+<p>Instead of using the service app to view hub events you can use the Azure IoT Explorer tool. There are various versions available, including for Winows, Linux, and Mac, download it from <a href="https://github.com/Azure/azure-iot-explorer/releases">here</a> and install it.</p>
+<p>You will need a different IoT Hub connection string for the explorer tool. You can get it by logging into the Azure portal <a href="https://portal.azure.com/">here,</a> and selecting your IoT hub. When you are on the IoT hub page follow the below screenshot to get the connection string.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_13new.PNG" width="1000" height="727" alt=""/></p>
+<p>&nbsp;</p>
+<p>With the Azure IoT Explorer installed,, click on the add connection button as below and follow the rest of the screenshots:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_12new.PNG" width="900" height="615" alt=""/></p>
+<p>&nbsp;</p>
+<p>Paste in the connection string you just copied:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_14new.PNG" width="900" height="746" alt=""/></p>
+<p>&nbsp;</p>
+<p>Select your virtual device that you created as part of your IoT hub:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_15new.PNG" width="900" height="722" alt=""/></p>
+<p>Now you will start listening for telemetry data being sent to your hub:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_16new.PNG" width="900" height="741" alt=""/></p>
+<p>&nbsp;</p>
+<p>Run your simulated device app again and the sensor data generated from it will be sent to your IoT hub and you can view the data as it arrives into the hub:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_17new.PNG" width="900" height="828" alt=""/></p>
+<p>&nbsp;</p>
+<p>That is it! You have now set up an Azure IoT Hub and connected your simulated device app to it.</p>
+<p>&nbsp;</p>
+<h3>Tasks for this week</h3>
+<p>i) Modify your simulated device code (in program.cs) so that a JSON array payload is sent to your Iot Hub, currently the temperature and humidity are sent as part of a JSON object you will need to add the ability to send a json array of data</p>
+<p>ii) The code current sends extra data as JSON for a temperature alert threshold, modify this code to send extra messages of your choosing that are part of the JSON payload, think of how you might use this for access control or filtering</p>
+<p>iii) Monitor the number of events recieved by finding the correct location in the Azure portal for your IoT hub and ensure you can see the number of events increasing correctly by starting and stopping the SimulatedDevice application</p>
+
+<p>&nbsp;</p>
+</body>
+	 <script type="text/javascript">
+      		 SyntaxHighlighter.all()
+      	</script>
+</html>
