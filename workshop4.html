@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	   <script type="text/javascript" src="js/scripts/shCore.js"></script>
+	<script type="text/javascript" src="js/scripts/shBrushCpp.js"></script>
+     <link type="text/css" rel="stylesheet" href="js/styles/shCoreDefault.css"/>
+</head>
+
+<body>
+<h1>Workshop 4 - Serverless Computing Connectivity</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop3logo.jpg" width="689" height="400" alt=""/></p>
+<p>&nbsp;</p>
+<p>In last week's workshop you setup your own Azure IoT Hub and sent data to it from the simulated device console app. The data was sent using the MQTT messaging protocol which you monitored in realtime using the Azure IoT Explorer tool. This week you will begin learning about serverless computing services, specifially <a href="https://docs.microsoft.com/en-gb/azure/azure-functions/functions-overview">Azure Functions</a>. You will first create a basic function in VSC, and then next week you will turn it into a a trigger event for your IoT Hub, namely aka an <a href="https://docs.microsoft.com/en-gb/azure/event-hubs/event-hubs-about">Event Hub</a>. The trigger event will be fired whenever you send data to your IoT hub and in this instance the trigger contains event code to take the sensor data from the simulated device app and store it in a database. </p>
+<p>Part 1 - Create a Serverless Azure Function using VSC</p>
+<p>Part 2 - Modify a local Serverless Azure Function using VSC to accept and return parameters</p>
+<p>Part 3 - Learn to deploy a Serverless Function to Azure from VSC</p>
+<p>&nbsp;</p>
+<h2>Part 1 - Create a Serverless Azure Function using VSC</h2>
+<p>For this part of the workshop you will need to ensure your development environment is fully set up. In week 1 we installed a number of azure extensions to Visual Studio Code and the .Net SDK, this week we will need to update the .Net SDK version to comply with the latest Azure functions.
+Please refer to workshop 1 for guidance on doing this at home ( I will update the workshop 1 html file with links to the updated install instructions), however we may have already set up the labs with the required software for you if you read this later but it is sensible to perform these steps anyway.</p>
+<p>Note that we have to download and update some software this week to allow us to continue.</p>
+<p>Download and install the .Net 6 SDK for Windows X64 (version 6.0.201 is current) <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0">Here</a> and install it</p>
+<p><img src="images/Download .NET 6.0 (Linux, macOS, and Windows).png" width="1239" height="848" alt=""/></p>
+<p>Download and install the Azure Functions Core Tools <a href="https://github.com/Azure/azure-functions-core-tools#installing">Here</a> selecting V4 Windows 64Bit (or whichever version for your chosen Operating System)</p>
+<p><img src="images/2022-03-Azure_azure-functions-core-tools_ Command line tools for Azure Functions.png" width="939" height="648" alt=""/></p>
+<p>With VSC setup now, you can use the Functions extension to create a function app project. </p>
+<p>Open VSC and signin into your Azure for Students subscription:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_11.JPG" width="539" height="648" alt=""/></p>
+<p><img src="images/workshop1_12.JPG" width="841" height="724" alt=""/></p>
+<p><img src="images/workshop1_13.JPG" width="866" height="487" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now return to VSC and you will see your university email address for Azure on the bottom left - the example here is Derek Foster's account, you should see your own account details:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop1_14.JPG" width="481" height="290" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, follow the steps in the screenshots below to create a local Azure Functions project which you will publish and deploy to Azure in part 2 of the workshop.</p>
+<p><img src="images/workshop4_1.png" width="400" height="535" alt=""/></p>
+<p>&nbsp;</p>
+<p>You might be prompted for a new project folder if you don't have a project open.</p>
+<p><img src="images/workshop4_2.png" width="543" height="157" alt=""/></p>
+<p>&nbsp;</p>
+<p>When you click on the <strong>Create new project</strong> button you will need to create a folder, I called my folder <strong>FunctionDemo</strong>. Next select the C# language </p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_3.png" width="806" height="366" alt=""/></p>
+<p>Then select C# runtime version, if in the labs we select <strong>.NET 6</strong> </p>
+<p><img src="images/workshop4_azure_function_selectdotnetversion_isolated.png" width="806" height="200" alt=""/></p>
+<p>Then select the <strong>HttpTrigger</strong> template </p>
+<p><img src="images/workshop4_4.png" width="763" height="519" alt=""/></p>
+<p>Then use the function name <strong>HttpExample</strong> as shown </p>
+<p><img src="images/workshop4_5.png" width="739" height="248" alt=""/></p>
+<p>Then use the namespace <strong>My.Functions</strong> as shown </p>
+<p><img src="images/workshop4_6.png" width="757" height="241" alt=""/></p>
+<p>Then use the <strong>Anonymous</strong> option for access rights as shown </p>
+<p><img src="images/workshop4_7.png" width="743" height="249" alt=""/></p>
+<p>Depending on which .Net version we selected, we may (optionally) see a prompt for OpenAPI support, simply select false if this appears </p>
+<p><img src="images/workshop4_8.png" width="749" height="287" alt=""/></p>
+<p>Finally we can select <strong>Add to Workspace</strong> </p>
+<p><img src="images/workshop4_9.png" width="745" height="296" alt=""/></p>
+<p>&nbsp;</p>
+<p>If you see a dependencies alert popup on the bottom right of VSC please click on the restore button to resolve. You should now have an HttpTrigger C# function template created as below. Have a look through the code, what do you think it does? You may have a fair idea after the week 4 lecture that covers REST concepts.You can view the local project files in the Explorer pane on the left of VSC. To learn more about files that are created, see <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs-code#generated-project-files" data-linktype="relative-path">Generated project files</a>. The main file of interest for us at this point is the <strong>HttpExample.cs</strong> file that is shown below.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_10.png" width="1000" height="735" alt=""/></p>
+<p>&nbsp;</p>
+<p>As you will have installed Azure Functions Core tools it will let you run the function on your local computer for testing, before deploying to Azure. Follow the steps below to run the function locally:</p>
+<p>To call your function, press F5 to start the function app project. Output from Core Tools is displayed in the <strong>Terminal</strong> panel. Your app starts in the <strong>Terminal</strong> panel. You can see the local URL endpoint of your HTTP-triggered function running locally:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_11.png" width="1000" height="253" alt=""/></p>
+<p>&nbsp;</p>
+<p>You can test the endpoint locally either in VSC or via a browser, We will do both here, first inside VSC. With Core Tools running (you did this in the previous step), go to the <strong>Azure: Functions</strong> area. Under <strong>Functions</strong>, expand <strong>Local Project</strong> &gt; <strong>Functions</strong>. Right-click (Windows)  the HttpExample function and choose <strong>Execute Function Now </strong>option:</p>
+<p><img src="images/workshop4_12.png" width="739" height="762" alt=""/></p>
+<p>&nbsp;</p>
+<p>In <strong>Enter request body</strong> you see the request message body value of { "name": "Azure" }. Change the Azue value to any value, for example your first name, in this example we chose Derek :) Press Enter to send this request message to your function.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_13.png" width="600" height="126" alt=""/></p>
+<p>&nbsp;</p>
+<p>Expand the notification that pops up on the bottom right that shows the reponse from your function trigger executing, you will also see further information in the <strong>Terminal</strong> panel when it executes:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_14.png" width="800" height="327" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now, we will do it again this time through the browser. To do this we need to get the local URL to paste into the browser. In the Terminal panel of VSC, scroll back up until you can see the URL of your function, it may not exactly look like the one shown below but may be similar:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_11.png" width="1000" height="253" alt=""/></p>
+<p>&nbsp;</p>
+<p>Copy the http URL and paste it into a browser address bar and hit enter, you should see something similar to below:</p>
+<p><img src="images/workshop4_15.png" width="1000" height="186" alt=""/></p>
+<p>It did not work as intended as it was expecting the name value in the query string, remember from earlier you gave it the value of { "name": "Azure" } when testing the function from within VSC. Modify your function URL by adding the query string below to the end of the URL:</p>
+<p>?name=Derek</p>
+<p>The full URL will now look similar to below:</p>
+<p>http://localhost:7071/api/HttpExample?name=Derek</p>
+<p>Now your browser should return the below response:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_16.png" width="623" height="152" alt=""/></p>
+<p>To do this testing, VSC uses the Azure Functions Core Tools, to stop it running, click in the Terminal pane and press Ctrl + C to stop Core Tools and disconnect the debugger.</p>
+<p>You have now learned the basics of creating an HTTP Trigger Azure Function and running it locally. The next part of the workshop will show you how to take the function code and publish it to Azure.</p>
+<h2>Part 2 - Modify a local Serverless Azure Function using VSC to accept and return parameters</h2>
+<p>Your main task this week involves building on what you have learned with HTTP Trigger functions. If you look at the HttpExample.cs file in VSC (you create this function in part 1 of this workshop) you will notice the using statement below that imports the <a href="https://www.newtonsoft.com/json">Newtonsoft.Json</a> framework for use in your function code:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_34.png" width="800" height="550" alt=""/></p>
+<p>&nbsp;</p>
+
+<p>The Newtonsoft.Json framework is used in the HttpExample.cs code to deserialise the query string that is added to your function URL: name=Derek</p>
+<p>Modify the code so  the function URL can manage two query parameters, in other words, instead of just accepting the name parameter it can accept values for <strong>name</strong> and <strong>surname</strong> as below:</p>
+<p>http://localhost:7071/api/HttpExample?name=Derek&amp;surname=Foster</p>
+<p><img src="images/workshop4_35.png" width="785" height="243" alt=""/></p>
+<p>Explore how you can return data formatted as a JSON object instead of the current <strong>messageResponse </strong>string.</p>
+
+<p>&nbsp;</p>
+<h2>Part 3 - How to Publish a Serveless Function to Azure</h2>
+<p>In this part of the workshop, you will learn how to publish the local HTTP trigger function from part 1 to Azure using your Azure for Students subscription. When published, the function will be addressable and triggered over the internet. It might be tempting to try to deploy this to Azure right away, however we advise you <strong>DO NOT PUBLISH YOUR FUNCTIONS TO AZURE UNTIL YOU KNOW HOW TO DELETE RESOURCE GROUPS</strong> as we need to take care to not incur charges for resources where possible and we can develop our application using local functions and simply deploy them later. So continue to read and understand all of the steps below <strong>including cleaning up resources</strong> before attempting to publish a serverless function to Azure. In fact, it is good practice to develop and test your Azure functions locally before you attempt to deploy them to the Azure cloud.</p>
+<p>Once you are certain you can find and delete resources within your Azure Portal and that you understand how Azure functions work to pass parameters and return data (typically JSON or XML format data), and can call them locally and from the browser, then you are ready to try deploying to the cloud:</p>
+<p>Choose the Azure icon in the Activity bar, then in the <strong>Azure: Functions</strong> area, choose the <strong>Deploy to function app</strong> button as shown below:</p>
+<p><img src="images/workshop4_17.png" width="500" height="429" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, provide the following information at the prompts:  </p>
+<ul>
+  <li>
+    <p><strong>Select Function App in Azure</strong>: Choose - Create new Function App. (Don't choose the Advanced option, which isn't covered in this workshop)</p>
+  </li>
+  <li>
+    <p><strong>Enter a globally unique name for the function app</strong>: Type a name that is valid in a URL path. The name you type is validated to make sure that it's unique in Azure Functions - please remember what this is! In this example we used the name of <strong>defroster1</strong> but you should use something different</p>
+  </li>
+	<li>
+    <p><strong>Select a runtime stack</strong>: Select .NET 6</p>
+  </li>
+  <li>
+    <p><strong>Select a location for new resources</strong>: For better performance, choose a <a href="https://azure.microsoft.com/regions/" data-linktype="external">region</a> near your current location</p>
+  </li>
+</ul>
+<p>The extension shows the status of individual resources as they are being created in Azure in the notification area:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_18.png" width="600" height="288" alt=""/></p>
+<p>&nbsp;</p>
+<p>When the function and asssociated resources are fully deployed and published to Azure you will see the notification message below in the terminal pane. click the view output button:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_19.png" width="587" height="143" alt=""/></p>
+<p>&nbsp;</p>
+<p>You will now be able to view the function deployment details including the name of the function app which in this case is <strong>defroster1</strong> (see 1), and the live function app URL (see 1), and the specific URL of the function you created called <strong>HttpExample</strong>:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_20.png" width="1000" height="432" alt=""/></p>
+<p>&nbsp;</p>
+<p>A function app can contain multiple functions, with each function having the same base URL, in the example above the base function app URL is, where the <strong>defroster1</strong> part of the URL is globally unique:</p>
+<p>https://defroster1.azurewebsites.net</p>
+<p>while the actual full function URL for the function you created called <strong>HttpExample</strong> is:</p>
+<p>https://defroster1.azurewebsites.net/api/HttpExample </p>
+<p>For example, if we created a new function called <strong>GetAllData</strong> and published it to the function app called defroster1 we would then have another function to use with a URL of:</p>
+<p>https://defroster1.azurewebsites.net/api/GetAllData </p>
+<p>You can check that your HttpExample function is working, by getting the full live URL of the function (see 2 in above screenshot) and pasting it into a browser. You should see the message below, the same as when you ran it locally in part 1 of the workshop:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_21.png" width="1000" height="181" alt=""/></p>
+<p>We can add the query string at the end of the function url, for the current example this would be:</p>
+<p>https://defroster1.azurewebsites.net/api/HttpExample?name=Derek</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_22.png" width="828" height="172" alt=""/></p>
+<p>&nbsp;</p>
+<p>With this completed you would now have a serverless function fully deployed to your Azure for Students subscription. Functions will form the core of your assessment development work and you will be creating several of them to handle data being ingested by your Azure IoT hub and to save and retrieve sensor data from a database. <strong>However it is good practice for us to develop our functions locally and only deploy them to the cloud (with the associated costs incurred) once we are sure they function correctly.</strong></p>
+<p>Next, you will learn where on the Azure portal your published function is hosted. Once you have followed the steps to deploy a serverless function to Azure, you can login into the Azure portal <a href="https://portal.azure.com/#home">here</a> and follow the screenshots below to view your function:</p>
+<p><img src="images/workshop4_23.png" width="300" height="635" alt=""/></p>
+<p><img src="images/workshop4_24.png" width="800" height="418" alt=""/></p>
+<p>&nbsp;</p>
+<p>The page you will see next is the main settings page for your function app, from here you can view all the functions that are part of your function app. The no.4 box shows the base URL for your function app, while the no.3 box shows the resource group that your function apps belongs. The resource group is similar to a folder in that it will hold all of the cloud resources that are part of your function app. If we delete the resource group then we delete all of the services associated with the function app. Take note of *your* resource group that is shown.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_25.png" width="1200" height="1100" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, if you followed the example above, you can view the <strong>HttpExample</strong> function that was created as part of the function app:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_26.png" width="900" height="558" alt=""/></p>
+<p>&nbsp;</p>
+<p>You can get the full URL of the function (as you did from VSC when you published it) by following the steps below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_27.png" width="900" height="507" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_28.png" width="900" height="396" alt=""/></p>
+<p>&nbsp;</p>
+<p><h3>Cleaning up resources you have deployed to the cloud</h3></p>
+<p>As soon as you have deployed services to your Azure subscription these will start incurring costs that will be deducted from your $100 of free credit, if you follow the example above, it wont be much but as there is no need for the basic function app you have created it is best to delete it. <strong>You should get into the habit of deleting resources you don't need</strong> as this will ensure you don't run out of credits before your assessment application is complete. You should have the resource group name handy from running the example above, in the example case the resource group name is <strong>defroster1</strong>. This <a href="https://portal.azure.com/#blade/HubsExtension/BrowseResourceGroups">link</a> should take you to a list of all the resource groups created against your Azure for Students subscription, you can also navigate to it manually by Home&gt;Resource Groups:</p>
+<p><img src="images/workshop4_29.png" width="327" height="828" alt=""/></p>
+<p>&nbsp;</p>
+<p>You should then locate your resouce group in the list and select it:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_30.png" width="700" height="387" alt=""/></p>
+<p>The large red box highlights all the cloud resources that are part of the resource group, you will be able to see your function app in the list, along with other cloud services that were automatically created as part of the function app. </p>
+<p><img src="images/workshop4_31.png" width="1000" height="536" alt=""/></p>
+<p>&nbsp;</p>
+<p>Click the Delete resource group option, you will then need to enter the name of the resouce group to confirm deletion. It may take a few minutes to fully delete the resource group and you can click on the notificatino to watch progress:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_32.png" width="600" height="948" alt=""/></p>
+<p><img src="images/workshop4_33.png" width="657" height="528" alt=""/></p>
+<p>&nbsp;</p>
+<p>Once you have deleted the resource group, that brings us to the end of part 2 and the guided part of the workshop. </p>
+<p><h3>It is important that you understand that all resources you provision will be charged to your Azure for Students subscription and that it is *YOUR* responsibility to ensure any resources are deleted so your credits do not run out</h3></p>
+  <p>This might seem obvious, however every year we have students taking cloud modules that fail to delete unused resources and hence run out of credits before being able to complete the assessment.</p>
+<p><strong>Next steps:</strong> Please investigate passing parameters to local serverless functions and returning JSon data from them, as you will need to be able to do this for the assessment.</p>
+<p>&nbsp;</p>
+<p>That is all for this week, next week you will create a Cosmos DB and IoT Hub Trigger to store sensor data.</p>
+<p>&nbsp;</p>
+<h3>&nbsp;</h3>
+<p>&nbsp;</p>
+</body>
+	 <script type="text/javascript">
+      		 SyntaxHighlighter.all()
+      	</script>
+</html>
