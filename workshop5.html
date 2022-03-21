@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Week 5 - Cosmos DB</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	  	   
+ <link rel="stylesheet" href="highlight/styles/default.css">
+<script src="highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<h1>Workshop 5 - Cosmos DB Database and Serverless Functions</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop3logo.jpg" width="689" height="400" alt=""/></p>
+<p>&nbsp;</p>
+<p>In this week's workshop you will create a Cosmos DB database and a serverless function of the type IoT Hub Trigger. The IoT Hub trigger function will be triggered to run anytime a message (data from the simulated devices app) is sent to your IoT Hub. Further to this, the IoT Hub trigger function will take the message payload (sensor data) and store it in your Cosmos DB database. </p>
+<p>The workshop is in two parts:</p>
+<p>Part 1 - Create a Cosmos DB to store temperature data from the simulated device app</p>
+<p>Part 2 - Create a serverless function that is triggered whenever your IoT hub receives sensor data, and save it to your Cosmos DB database</p>
+<p>&nbsp;</p>
+<h2>Part 1 - Create a Cosmos DB</h2>
+<p>For this part of the workshop you will create a new resource on Azure in the form of a Cosmos DB store. The database will store the temperature data sent from the simulated device app.</p>
+<p>To get started login to your Azure account <a href="http://portal.azure.com/">here</a> using your university email credentials OR using your personal Microsoft email if you used the voucher code method. When logged in, click the Home button as shown below to ensure you are on the correct landing page:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop3_image1.png" width="800" height="522" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, follow the steps to create a new Cosmos DB by adding it to the resource group you created in workshop 3 - you should keep everything related to the module in the same resource group. </p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_image1.png" width="200" height="185" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop4_image2.png" width="500" height="763" alt=""/></p>
+
+
+
+
+<!-- <p>&nbsp;</p>
+<p><img src="images/workshop5v2_1.PNG" width="1000" height="945" alt=""/></p> 
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_2.PNG" width="800" height="867" alt=""/></p>
+<p>&nbsp;</p>--> 
+
+<p>&nbsp;</p>
+<p><img src="images/lab5_new1.png" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/lab5_new2.png" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/lab5_new3.png" alt=""/></p>
+
+<p>OK - you now have a Cosmos DB account that is deployed and configured for use with the SQL API. Wait until the 'Deployment is in progress' message is complete and the blue button name 'Go to resource' appears and click it.</p>
+<p>Next, you will add a database and container (collection of items) that will be used to store the sensor data from the simulated device app::</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_4.PNG" width="834" height="509" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_5.PNG" width="500" height="1310" alt=""/></p>
+<p>&nbsp;</p>
+<p>When fully deployed you will have a Cosmos datastore you can use to store data for the remainder of the module and your assessment work,  do not delete this resource from your subscription.</p>
+<p>Time for part 2!</p>
+<p>&nbsp;</p>
+
+
+
+<h2>Part 2 - Create a Serveless Function and an IoT Hub Event Trigger</h2>
+<p>In this part of the workshop, you will create an Azure Function app that contains an IoT Hub Trigger function. The trigger will process any sensor data that is sent to your IoT Hub from the simulated device app. Specifically,  whenever your IoT hub receives data, the function will be triggered to run and save the data to the Cosmos datastore you created in part 1.</p>
+
+<h4>Note: Make sure that the Microsoft.Storage is on the Resource Providers of your Azure subscription. To check this, go to, <a href="http://portal.azure.com/">Azure portal</a>. In the search box, enter subscriptions. Or if you've recently viewed your subscription, select Subscriptions > Azure for Students > Resource providers. Finally, check the Microsoft.Storage is registered.
+</h4>
+
+
+<p>Start by opening VSC and follow the steps below to create an IoT Hub Trigger:</p>
+<p>1. Open VSC</p>
+<p>2. Select the Azure icon and then the <strong>Create Function</strong> button:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_6.PNG" width="500" height="744" alt=""/></p>
+<p>&nbsp;</p>
+<p>3. Click the '<strong>Create new project</strong>' button and select or create a folder where the function files will be stored</p>
+<p>4. <strong>Select a language:</strong> select C#</p>
+<p>5. <strong>Select a template</strong>: select the IotHubTrigger template and give the function a name such as myIoTHubTrigger</p>
+<p>6. <strong>Provide a namespace</strong>: This can be anything you like, for example my.uni</p>
+<p>7.<strong> Select setting:</strong> Select the Create new local app setting</p>
+<p>8. <strong>Select an event hub namespace</strong>: select Skip for now</p>
+<p>9. Press enter for this step where the IoT hub endpoint name of <strong>messages/events</strong> is displayed</p>
+<p>10. When this mesages is displayed: 'In order to debig, you must select a storage account......', click the 'Select storage account' button</p>
+<p>11. Select the <strong>Create new storage account</strong> option and enter a unique name using only numbers and lowercase letters</p>
+<p>12. <strong>Select a resource group for new resources</strong>: you should already have one created from when you create your Azure IoT hub from workshop 4, please select this one. My resource group was called <strong>temperaturesensor</strong>, yours may be something similar or the same</p>
+<p>13. <strong>Select a location for new resources</strong>: select the location closest to you, in my case Is selected UK West</p>
+<p>14. <strong>Select how you would like to open your project</strong>: select Add to workspace</p>
+<p>&nbsp;</p>
+<p>Your IoTHubTrigger function app cloud services will be created as well as the source files you can begin to edit in VSC:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_7.PNG" width="448" height="667" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now open the .csproj file that is part of your function, in the screenshot above it is called <strong>IoTHubTrigger.csproj</strong>. You are going to add packages to bring in more SDKs, for example for your trigger code to interact with Cosmos DB and Azure IoT Hub devices. Add the below lines to your .csproj file (remember your file names may be different):</p>
+<pre><code class="cs">
+&ltPackageReference Include="Microsoft.Azure.WebJobs.Extensions.CosmosDB" Version="3.0.10" />
+&ltPackageReference Include="Microsoft.Azure.Devices" Version="1.30.0" />
+</pre>
+<p>&nbsp;</p>
+<h3><img src="images/workshop5v2_8.PNG" width="1200" height="622" alt=""/></h3>
+<p>&nbsp;</p>
+<p>A popup may appear in the bottom right asking if you want to restore the packages to download this new reference. Click <strong>Restore</strong>. If you don't see this popup, from the command palette (CTRL+SHIFT+P)  select <em>.NET: Restore All Projects</em>.</p>
+<p>Next, you will need to copy two connection strings from the Azure Portal. These are for hooking up your trigger code to your Azure IoT Hub and Cosmos DB database. Login to the portal <a href="https://portal.azure.com/">here</a> and from your IoT Hub (<strong>Home&gt;All Resources</strong>) select your Iot Hub, and copy the 'Event hub compatanle endpoint' connection string and save to a text file:</p>
+<p><img src="images/workshop5v2_9.PNG" width="1000" height="964" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now go to your Cosmos DB (<strong>Home&gt;All Resources</strong>) and select your Cosmos DB. Follow the screenshot below and copy the primary connection string:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_10.PNG" width="1000" height="729" alt=""/></p>
+<p>&nbsp;</p>
+<p>You should now have two connection strings, one for your IoT hub (event hub) and one for your Cosmos DB. Copy the code below and add your connection strings inside the correct set of quotes:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+"AzureEventHubConnectionString": "your key here"
+"cosmosDBConnectionString": "your jey here"
+</pre>
+<p>&nbsp;</p>
+<p>Next, open the <strong>local.settings.json</strong> file in VSC code and add your completed connection strings as shown below, you will need to add a few commas to separate the values:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_11.PNG" width="1200" height="561" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now you will start to add the code logic for the trigger function. The purpose of your function is to trigger and run anytime sensor data is sent to your IoT hub. When it is triggered, the sensor data is parsed and saved to your Cosmos DB database that your created in part 1 of this workshop.</p>
+<p>Open the <strong>myIoTHubTrigger.cs</strong> file (you may have named it differently):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_12.PNG" width="442" height="577" alt=""/></p>
+<p>&nbsp;</p>
+<p>Add  a new using directive to the top of the file, below the existing using directives:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+using Newtonsoft.Json;
+</pre>
+<p><img src="images/workshop5v2_13.PNG" width="1000" height="454" alt=""/></p>
+<p>&nbsp;</p>
+<p>Declare a new class to hold the sensor data that will be saved into Cosmos DB. Add this code inside the namespace declaration, and before the public class IoTHUbTrigger1 class definition as shown below:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+public class TemperatureItem
+  {
+    [JsonProperty("id")]
+    public string Id {get; set;}
+    public double Temperature {get; set;}
+    public double Humidity {get; set;}
+  }
+</pre>
+<p><img src="images/workshop5v2_14.PNG" width="1000" height="686" alt=""/></p>
+<p>&nbsp;</p>
+<p>Replace the function code with the below, paying attention ro replacing the correct parts. Essentially you are wiring up your trigger function code to the Azure IoT hub and Cosmos DB. The log.information line of code at end will display the sensor data that arrives into the hub in the terminal window of VSC:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+[FunctionName("myIoTHubTrigger")]
+        public static void Run([IoTHubTrigger("messages/events", Connection = "AzureEventHubConnectionString")] EventData message,
+        [CosmosDB(databaseName: "IoTData",
+                                 collectionName: "Temperatures",
+                                 ConnectionStringSetting = "cosmosDBConnectionString")] out TemperatureItem output,
+                       ILogger log)
+        {
+            log.LogInformation($"C# IoT Hub trigger function processed a message: {Encoding.UTF8.GetString(message.Body.Array)}");
+</pre>
+<p>&nbsp;</p>
+
+<p><img src="images/workshop5v2_15.PNG" width="1200" height="432" alt=""/></p>
+<p>&nbsp;</p>
+<p>Under the main function run code, add the below code to  deserialize the JSON passed in the body of the message and extract the temperature and humidity values that are sent from the simulated device app. The output parameter from your function is set to be a new TemperatureItem using the values from the message from the simulated device app. This will create a document  and insert it into your Cosmos database collection. A new item is inserted everytime the simulated device app sends data.</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+var jsonBody = Encoding.UTF8.GetString(message.Body);
+dynamic data = JsonConvert.DeserializeObject(jsonBody);
+double temperature = data.temperature;
+double humidity = data.humidity;
+
+output = new TemperatureItem
+ {
+    Temperature = temperature,
+    Humidity = humidity
+};
+
+</pre>
+<p><img src="images/workshop5v2_16.PNG" width="1200" height="585" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now you can test your new IoT Hub trigger function! To do this hit F5 to start debugging and run the function locally, all going well your terminal window will be similar to below to show the function  is running locally on your machine:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_17.PNG" width="1000" height="385" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now run the simulated device app (refer to workshop 3 for a refresher) to start sending data to your IoT Hub. When data is being sent your IoT Hub Trigger function will fire every time a message is received from the simulated device app as you can see below in VSC:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_18.PNG" width="1500" height="956" alt=""/></p>
+<p>&nbsp;</p>
+<p>There are several ways you can explore the above sensor data  that is saved in Cosmos DB. One way is to simply  login to the Azure portal here using your student login details, and goint to Home&gt;All Resources and selecting your Cosmos DB. Follow the steps below to view the sensor data that is stored in your Cosmos database from the simulated device app:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_19.PNG" width="708" height="732" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_20.PNG" width="806" height="595" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_21.PNG" width="1000" height="768" alt=""/></p>
+<p>&nbsp;</p>
+<p>You now have an Iot Hub Trigger Function and Cosmos database setup. Please keep these resources and do not delete them from your Azure subscription as you will need them for future workshops as well as your assessment work.</p>
+<h2>Independent Task</h2>
+<p>Copy one of the data items from your Cosmos DB output, see above. An example is below:</p>
+<pre><code class="cs">
+{
+        "id": "85c5354f-066a-4a53-a250-209610e6d78d",
+        "Temperature": 31.41278968956917,
+        "Humidity": 62.503304212588496,
+        "_rid": "yhk0ANZORiQCAAAAAAAAAA==",
+        "_self": "dbs/yhk0AA==/colls/yhk0ANZORiQ=/docs/yhk0ANZORiQCAAAAAAAAAA==/",
+        "_etag": "\"1d0013cf-0000-1100-0000-6053d9a00000\"",
+        "_attachments": "attachments/",
+        "_ts": 1616107936
+)
+</pre>
+<p>The above data item from Cosmos is already formatted as a JSON object, you can view this easier by using the online JSON viewer <a href="https://jsonformatter.org/json-viewer">here</a> by pasting it as below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop5v2_23.PNG" width="1200" height="441" alt=""/></p>
+<p>&nbsp;</p>
+<p>It is important to understand how JSON is formatted as you will need to parse JSON objects to display in a web app later in the module.</p>
+<p>For this task, explore how you can modify the code in the myIoTHubTrigger.cs file so that a JSON array is saved to your Cosmos DB isntead of a JSON object. You can also place the JSON array inside an object.</p>
+<p>It is also useful to understand the different types of bindings you can use with Azure Functions. Please read through the documentation <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-triggers-bindings?tabs=csharp">here</a> to learn more on these, with emphasis on trigger bindings.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</body>
+	 <script type="text/javascript">
+      		 SyntaxHighlighter.all()
+      	</script>
+</html>
