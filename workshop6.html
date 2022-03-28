@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	  	   
+ <link rel="stylesheet" href="highlight/styles/default.css">
+<script src="highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<h1>Workshop 6 -  Serverless Functions to Expose Data from Cosmos DB</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop6_new_image1.png" width="730" height="360" alt=""/></p>
+<p>&nbsp;</p>
+<p>In this week's workshop you will add to the function app you created last week. As a reminder, last week in workshop 5 you created a Cosmos DB database and a serverless function of the type IoT Hub Trigger. Remember, the IoT Hub trigger function will  triggered to run anytime a message (data from the simulated devices app) was sent to your IoT Hub. Further to this, the IoT Hub trigger function then took the sensor data and stored it in your Cosmos DB database. </p>
+<p>This week you are going to add anew HTTPTrigger function inside the function app you created in workshop 5 for the purpose of exposing the save sensor data in your CosmosDB. This will be done using a simple REST endpoint that is part of your HTTPTrigger function, with the sensor data returned as JSON.</p>
+<p>The workshop has a short guided component with the remainder of the workshop being available to catch up on previous tasks or attempt the independent tasks.</p>
+<p>&nbsp;</p>
+<h2> Create an HTTPTrigger function to Expose CosmosDB data</h2>
+<p>Open up the IoTHubTrigger function app you created in workshop 5 in VSC. You may need to locate the folder on your computer where you stored it, or it may open automatically. Next open the <strong>myIoTHubTrigger.cs</strong> file and add the below using directives to the top of the file:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+</pre>
+<p>Next you are going to add in a new function called <strong>GetTemperature</strong> whose sole purpose is to connect to your ComsosDB whenever it is triggered and return all of the stored sensor data. The HttpTrigger attribute on the HttpRequest tells the functions runtime that this function should be triggered by an HTTP request. This request allows anonymous authorization, meaning anyone can call it. Security is outside the scope of this workshop, but you can read more on securing Azure Function apps in the <a href="https://docs.microsoft.com/azure/azure-functions/functions-bindings-http-webhook#trigger---usage?WT.mc_id=mxchipworkshop-github-jabenn" rel="nofollow">docs</a>. This trigger only responds to GET requests, and is accessed by calling https://&lt;your URL&gt;/api/temperature/, and this is defined in the <strong>Route</strong> parameter. You can also see in the code we are using the connection details for your CosmosDB, if your database or collection (container) name is different then please edit accordingly:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+[FunctionName("GetTemperature")]
+      public static IActionResult GetTemperature(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "temperature/")] HttpRequest req,
+        [CosmosDB(databaseName: "IoTData",
+                  collectionName: "Temperatures",
+                  ConnectionStringSetting = "cosmosDBConnectionString",
+                      SqlQuery = "SELECT * FROM c")] IEnumerable<TemperatureItem> temperatureItem,
+                  ILogger log)
+      {
+        return new OkObjectResult(temperatureItem);
+      }
+</pre>
+<p>This CosmosDB binding will return all documents inside the Cosmos DB collection,, essentially binding it to the REST resource from the URL. For example, if you issue a GET request to https://localhost/api/temperature/, (when the function is running) it will extract all documents from the collection as a JSON object.</p>
+<p>For placement of the GetTemperature function code please see below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop6_new_image2.png" width="1200" height="744" alt=""/></p>
+<p>&nbsp;</p>
+<p>Save and run the function app (hit F5) and you will see that you now have two functions running inside your function app, your new function for a GET request called <strong>GetTemperture</strong>, and your function from workshop 5 called my <strong>myIoTHubTrigger</strong>:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop6_new_image3.png" width="800" height="339" alt=""/></p>
+<p>&nbsp;</p>
+<p>Cope and paste your GetTemperature function URL (as higlighted in above screenshot) and it should return all of the sensor data in your CosmosDB database, for id, temperature, and humidity values (remember your function url may not be the same as presented here):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop6_new_image4.png" width="1200" height="992" alt=""/></p>
+<p>&nbsp;</p>
+<p>The above data item from Cosmos is already formatted as a JSON array, you can view this easier by using the online JSON viewer <a href="https://jsonformatter.org/json-viewer">here</a> by pasting it as below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop6_new_image5.png" width="800" height="738" alt=""/></p>
+<p>&nbsp;</p>
+<p>In terms of serverless functions, you should now have an IoTHubTrigger function (from workshop 5) and an HTTPtrigger function (from this workshop) in the same function app.  Please keep these code resources and do not delete them as you will need them for future workshops as well as your assessment work.</p>
+<h2>Independent Tasks</h2>
+<p>i) Explore how you can filter the data returned by changing the SQL query so either only temperature or humidity data is returned. Remember - this is not standard SQL and you will need to follow CosmosDB rules <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-getting-started">here.</a></p>
+<p>ii) You can create routes in HTTP trigger functions that can accept parameters. Modify the HTTP trigger code so that its route can accept two date parameters (start and end) that will return only sensor data between the range. To get started look at the ultimate reference guide <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=csharp2">here</a> for functions! CosmosDB attaches a timestamp filed to every document, you will be able to use this but will need converting.</p>
+<pre><code class="cs"></pre>
+</body>
+	 <script type="text/javascript">
+      		 SyntaxHighlighter.all()
+      	</script>
+</html>
