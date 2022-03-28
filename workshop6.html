@@ -30,18 +30,20 @@ using System.Collections.Generic;
 </pre>
 <p>Next you are going to add in a new function called <strong>GetTemperature</strong> whose sole purpose is to connect to your ComsosDB whenever it is triggered and return all of the stored sensor data. The HttpTrigger attribute on the HttpRequest tells the functions runtime that this function should be triggered by an HTTP request. This request allows anonymous authorization, meaning anyone can call it. Security is outside the scope of this workshop, but you can read more on securing Azure Function apps in the <a href="https://docs.microsoft.com/azure/azure-functions/functions-bindings-http-webhook#trigger---usage?WT.mc_id=mxchipworkshop-github-jabenn" rel="nofollow">docs</a>. This trigger only responds to GET requests, and is accessed by calling https://&lt;your URL&gt;/api/temperature/, and this is defined in the <strong>Route</strong> parameter. You can also see in the code we are using the connection details for your CosmosDB, if your database or collection (container) name is different then please edit accordingly:</p>
 <p>&nbsp;</p>
-<pre><code class="cs">
-[FunctionName("GetTemperature")]
+<pre>
+  <code class="cs">
+      [FunctionName("GetTemperature")]
       public static IActionResult GetTemperature(
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "temperature/")] HttpRequest req,
         [CosmosDB(databaseName: "IoTData",
                   collectionName: "Temperatures",
                   ConnectionStringSetting = "cosmosDBConnectionString",
-                      SqlQuery = "SELECT * FROM c")] IEnumerable<TemperatureItem> temperatureItem,
+                      SqlQuery = "SELECT * FROM c")] IEnumerable< TemperatureItem> temperatureItem,
                   ILogger log)
       {
         return new OkObjectResult(temperatureItem);
       }
+    </code> 
 </pre>
 <p>This CosmosDB binding will return all documents inside the Cosmos DB collection,, essentially binding it to the REST resource from the URL. For example, if you issue a GET request to https://localhost/api/temperature/, (when the function is running) it will extract all documents from the collection as a JSON object.</p>
 <p>For placement of the GetTemperature function code please see below:</p>
