@@ -12,3 +12,5 @@ https://cmp9785m-cloud-development-2022.github.io/CMP9785M-Cloud-Development-202
 https://cmp9785m-cloud-development-2022.github.io/CMP9785M-Cloud-Development-2022/workshop5.html
 
 https://cmp9785m-cloud-development-2022.github.io/CMP9785M-Cloud-Development-2022/workshop6.html
+
+https://cmp9785m-cloud-development-2022.github.io/CMP9785M-Cloud-Development-2022/workshop7.html
