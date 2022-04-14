@@ -59,7 +59,7 @@
 	<p><img src="images/workshop7_5.PNG" width="783" height="458" alt="" /></p>
 	<p>&nbsp;</p>
 	<p>At the terminal type in: </p>
-	<p><strong>dotnet new webapp -f netcoreapp3.1</strong></p>
+	<p><strong>dotnet new webapp</strong></p>
 	<p><img src="images/workshop7_6.PNG" width="956" height="484" alt="" /></p>
 	<p>&nbsp;</p>
 	<p>A new web app will be created inside the MyFirstAzureWebApp folder. Now run the new web app with the below
@@ -101,17 +101,17 @@
 		source is set to your local function url while its running in another instance of VSC.:</p>
 	<p>&nbsp;</p>
 	<pre><code class="cs">
-		@page
-		@model IndexModel
-		@{
-			ViewData["Title"] = "Home page";
-		}
+	@page
+	@model IndexModel
+	@{
+		ViewData["Title"] = "Home page";
+	}
 
-		&lt;div class="text-center"&gt;
-			&lt;h1 class="display-4">Last Sensor Value&lt;/h1&gt;
-			&lt;p&gt;&lt;/p&gt;
-			&lt;iframe src="http://localhost:7071/api/temperature/"></iframe>
-		&lt;/div&gt;
+	&lt;div class="text-center"&gt;
+		&lt;h1 class="display-4">Last Sensor Value&lt;/h1&gt;
+		&lt;p&gt;&lt;/p&gt;
+		&lt;iframe src="http://localhost:7071/api/temperature/"></iframe>
+	&lt;/div&gt;
 	</pre>
 	<p>&nbsp;</p>
 	<p><img src="images/workshop7_12.PNG" width="800" height="365" alt="" /></p>
