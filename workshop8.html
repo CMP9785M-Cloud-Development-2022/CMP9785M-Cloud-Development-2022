@@ -266,8 +266,8 @@
 	<p>Next, to deploy your web app using the VSC Azure Tools extension:</p>
 	<ol>
 		<li>
-			<p>In ViSCe, open the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette"
-					data-linktype="external"><strong>Command Palette</strong></a>, Ctrl+Shift+P.</p>
+			<p>In VSC, open the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette"
+					data-linktype="external"><strong>Command Palette</strong></a>, press Ctrl+Shift+P.</p>
 		</li>
 		<li>
 			<p>Search for and select "Azure App Service: Deploy to Web App".</p>
@@ -276,17 +276,13 @@
 			<p>Respond to the prompts as follows:</p>
 			<ul>
 				<li>
-					<p>Select <strong>MyFirstAzureWebApp</strong> as the folder to deploy or select the name of the
-						folder your web app is in/</p>
+					<p>Select <strong>MyFirstAzureWebApp</strong> as the folder to deploy OR select the name of the folder your web app is in.</p>
 				</li>
 				<li>
 					<p>Select <strong>Add Config</strong> when prompted.</p>
 				</li>
 				<li>
-					<p>If prompted, sign in to your existing Azure account.</p>
-				</li>
-				<li>
-					<p>Select your Azxure <strong>Subscription</strong> if prompted.</p>
+					<p>If prompted, sign in to your existing Azure account. Select your Azxure <strong>Subscription</strong>.</p>
 				</li>
 				<li>
 					<p>Select <strong>Create new Web App... Advanced</strong>.</p>
@@ -298,21 +294,23 @@
 				</li>
 				<li>
 					<p>Select the resourcer group from the list that you created previously, the same one your IoT hub
-						is deployed to.</p>
+						is deployed to (i.e., temperaturesensor).</p>
 				</li>
 				<li>
 					<p>When prompted to <strong>Select a runtime stack</strong>:
 					</p>
 					<ul>
 						<li>
-							<p>For <em>.NET Core 3.1</em>, select <strong>.NET Core 3.1 (LTS)</strong></p>
+							<p>For <em>.NET Core 3.1</em>, select <strong>.NET Core 6 (LTS)</strong>.</p>
 						</li>
 					</ul>
-					<p>Select the <strong>Windows</strong> operating system</p>
 				</li>
 				<li>
-					<p>Select the<strong> F1 (free) App Service plan</strong>, that appears in the list (you created
-						this earlier in the workshop), you should not need to create another one</p>
+					<p>If prompted, select the <strong>Windows</strong> operating system.</p>
+					</li>
+				<li>
+					<p>Select the<strong> F1 (free) App Service plan</strong>, that appears in the list (you have created
+						this earlier in this workshop), you should not need to create new one.</p>
 				</li>
 				<li>
 					<p>Select <strong>Skip for now</strong> for the Application Insights resource.</p>
