@@ -1,0 +1,276 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Workshop 8</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	  	   
+ <link rel="stylesheet" href="highlight/styles/default.css">
+<script src="highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<h1>Workshop 8 - Publishing your Cloud Services to Azure</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop7_0.PNG" width="268" height="188" alt=""/></p>
+<p>&nbsp;</p>
+<p>In this week's workshop you will learn how to publish (deploy) all of the services you have developed in previous workshops. You have already created and deployed your IoT Hub and Cosmos database as shown at the top of the image below. This workshop will walk you through how to publish your IoT Hub Trigger function, HTTP Trigger function, and Web App to Azure usnig your Azure for Students subscription.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop7_10.PNG" width="809" height="495" alt=""/></p>
+<p>&nbsp;</p>
+<p>- As a reminder, last week in workshop 7. you created a  Web App. The Web App is the last service you will create for the module and assessment. At this point you should be deciding what type of sensor data you want to simulate with the simulated device app from workshop 2 and how you will connect the rest of your services. Particular attention must be paid to your HTTP Trigger function responses in terms of how you will filter the data using a JSON structure.</p>
+<p>In summary, there are no more major cloud services to be created and worked on for the assessment after the web app you created in week 7.</p>
+<p>&nbsp;</p>
+<h2>Preparation</h2>
+<p>It is worthwhile ensuring your Azure for Students subscription only has the services published deployed that you need before completing the rest of this workshop. At present you only need the below services deployed:</p>
+<p><strong>IoT Hub (Workshop 3)</strong></p>
+<p><strong>Cosmos Database (Workshop 5)</strong></p>
+<p>To ensure this is the case, login to your Azure subscription <a href="https://portal.azure.com/#home">here</a> and select <strong>All Resource</strong> to view what is currently deployed.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new1.PNG" width="700" height="362" alt=""/></p>
+<p>&nbsp;</p>
+<p> If you have been following all the workshops precisely, you should see the IoT Hub, Cosmos Database, and storage account(s). 
+	However, only the IoT Hub and Cosmos Database are required (see screenshot below). </p>
+<p><img src="images/workshop8_new2.PNG" width="1000" height="391" alt=""/></p>
+<p>&nbsp;</p>
+<p>If you see other services deployed on this page please delete them by selecting the checkbox for each service on the left and then selecting the <strong>Delete</strong> tab above the list of services on the same page. You can double check you are not deleteing your IoT Hub and Azure Cosmos DB account by looking at the <strong>Type </strong>column, as this shows you what type of service is deployed.</p>
+<p>You should have, of course, completed the workshops for the following services that you have created and tested locally through Visual Studio code; it is the code for these services that you will publish to Azure:</p>
+<p><strong>IoT Hub Trigger function (workshop 5)</strong></p>
+<p><strong>HTTP Trigger function (workshop 6)</strong></p>
+<p><strong>Web App (workshop 7)</strong></p>
+<p>Please take note of the resource group name that your IoT Hub or Cosmos DB is deployed to, this is highlighted in yellow in the above screenshot. You need the resource group name as you are going to publish all of your services to this resource group. In the screenshot above the resource group name is <strong>temperaturesensor</strong>, but you may have named it something else which is fine.</p>
+<h2>Publish your IoT Hub Trigger &amp; HTTP Trigger Functions</h2>
+<p><strong>Note</strong> Before you attempt this workshop, it is expected that you have completed all previous workshops. If you have not done all, please do them first, then resume with this workshop.</p>
+<p>&nbsp;</p>
+<p>Open your completed code project folder <strong>IoTHubTrigger</strong> (if you have used same suggested project name in workshops 5) in Visual Studio code (VSC).</p>
+<p><img src="images/workshop8_new3.PNG" width="700" height="525" alt=""/></p>
+<p>&nbsp;</p>
+<p>The opend project should contanis your IoT Hub Trigger &amp; HTTP Trigger functions from workshops 5 and 6 (you have two functions in one project with the code for both functions in the <strong>myIoTHubTrigger.cs</strong> file (see the screenshot below)</p>
+
+<p><img src="images/workshop8_new4.PNG" width="1202" height="886" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new8.5.PNG" width="1200" height="1144" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now follow the below steps for creating and publishing a new function app on Azure that contains your IoT Hub Trigger and HTTP Trigger functions.</p>
+<p>1. Start to deploy your function app from VSC:</p>
+<p><img src="images/workshop8_new5.PNG" width="458" height="616" alt=""/></p>
+<p>&nbsp;</p>
+<p>2. If you are asked to sign in the please sign in to yur Azure for Students subscription, you may not have to do this if already signed in:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new6.PNG" width="700" height="143" alt=""/></p>
+<p>&nbsp;</p>
+<p>3. Select 'Create a new Function App in Azure':</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new7.PNG" width="892" height="165" alt=""/></p>
+<p>&nbsp;</p>
+<p>4. Give your new function app a name, it cannot be the same as the one in screenshot and must be unique:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new8.PNG" width="818" height="177" alt=""/></p>
+<p>&nbsp;</p>
+<p>5. Select the .NET Core runtime stack (version may vary. You may see .NET Core 6):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new9.PNG" width="789" height="371" alt=""/></p>
+<p>&nbsp;</p>
+<p>6. Select Windows:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new10.PNG" width="770" height="168" alt=""/></p>
+<p>&nbsp;</p>
+<p>7. Select App Service Plan:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new11.PNG" width="773" height="191" alt=""/></p>
+<p>&nbsp;</p>
+<p>8. Create a name for the App Service Plan (please dont use same name used in screenshot):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new12.PNG" width="754" height="127" alt=""/></p>
+<p>&nbsp;</p>
+<p>9. Select the F1 Free pricing tier - this means it was use any of your subscription credits:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new13.PNG" width="771" height="395" alt=""/></p>
+<p>&nbsp;</p>
+<p>10. Select the resource group your function app will be allocated to, remember you should use the resource group name you took note of at the beginning of this workshop:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new14.PNG" width="775" height="248" alt=""/></p>
+<p>&nbsp;</p>
+<p>11. Select 'Create new storage account':</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new15.PNG" width="765" height="133" alt=""/></p>
+<p>&nbsp;</p>
+<p>12. Give your new storage account a name, all lowercase with just letters. You cannot use the storage account name below as it must be globally unique:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new16.PNG" width="759" height="138" alt=""/></p>
+<p>&nbsp;</p>
+<p>13. Select 'Skip for now':</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new17.PNG" width="758" height="156" alt=""/></p>
+<p>&nbsp;</p>
+<p>14. Select the closest location, you can also select the same location as shown in screenshot:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new18.PNG" width="756" height="550" alt=""/></p>
+<p>&nbsp;</p>
+<p>15. You have now configured all the settings for your funcation app and it will begin deploying to Azure:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new19.PNG" width="739" height="415" alt=""/></p>
+<p>&nbsp;</p>
+<p>16. Eventually you will see the progress of the deployment in the Terminal windows and you can click the ouput window option for more info:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new20.PNG" width="1000" height="426" alt=""/></p>
+<p>&nbsp;</p>
+<p>17. When fully deployed you will see the function app has its own web address and also outputs the web address of the HTTP Trigger function. The IoT Hub Trigger does not have an HTTP address as not designed for use in that context:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new21.PNG" width="1000" height="494" alt=""/></p>
+<p>&nbsp;</p>
+<p>So you have fully deployed a function app to Azure with your two functions, great! However, there are still a few important configurations steps to do before the functions are operational.</p>
+<p>First, go onto the Azure portal and check that your function app and functions have delpoyed:. Go to <strong>Home&gt;All Resources</strong> then follow the below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new22.PNG" width="1000" height="577" alt=""/></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new23.PNG" width="1200" height="653" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now return to VSC and open the <strong>local.settings.json</strong> file as below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new24.PNG" width="1000" height="537" alt=""/></p>
+<p>&nbsp;</p>
+<p>The <strong>local.settings.json</strong> file contains sensitive credentials that are not sent to Azure as part of the publish process you just walked through. The two application settings that need to be manually copied from the local.settings.json file to your function app on Azure are below:</p>
+<p><strong>AzureEventHubConnectionString</strong></p>
+<p><strong>cosmosDBConnectionString</strong></p>
+<p>You will now add these to your function app on Azure. With both VSC and the Azure portal side by side you will not add the connection strings.</p>
+<p>In Azure go to your function app you just created and select the <strong>configuration</strong> option:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new25.PNG" width="1200" height="794" alt=""/></p>
+<p>&nbsp;</p>
+<p>In the screenshot above you can see a bunch of application settings are already present, but you need to add two more from your local.settings.json file from VSC. these settings allow your functions to communicate securely with your IoT Hub and Cosmos database.</p>
+<p>The first one to add is for your IoT Hub Trigger function and the application setting will be added with the name of <strong>AzureEventHubConnectionString</strong>:</p>
+<p>In Azure select the 'New application setting' option and a window will pop up requesting a name and value for the new setting:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new26.PNG" width="1000" height="693" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new27.PNG" width="1000" height="477" alt=""/></p>
+<p>&nbsp;</p>
+<p>In VSC, copy the name and value for the <strong>AzureEventHubConnectionString</strong>: setting in the local.settings.json file and copy them into the Azure settings window (Do not copy the inverted commas, just the values!</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new28.PNG" width="1245" height="325" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new29.PNG" width="1000" height="614" alt=""/></p>
+<p>&nbsp;</p>
+<p>You can see the setting has now been added to the list (but not fully saved yet!):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new30.PNG" width="800" height="628" alt=""/></p>
+<p>&nbsp;</p>
+<p>No repeat the 'New application setting' steps for adding the <strong>cosmosDBConnectionString</strong> name and value to Azure. When you have done this, you should see the two new settings have been added to the list:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new31.PNG" width="800" height="616" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now hit <strong>Save</strong> and the settings will be saved, this will cause your functions app to be restarted:</p>
+<p>&nbsp;</p>
+<p></p>
+<p><img src="images/workshop8_new32.PNG" width="800" height="623" alt=""/></p>
+<p>&nbsp;</p>
+<p>At this point your functions should now be running in the cloud, if they were running without issues locally before you published them then everything should now be working.</p>
+<p>Frist, test your <strong>HTTP Trigge</strong>r function to ensure it is connecting to your Cosmos database and returning data:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new33.PNG" width="1200" height="685" alt=""/></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Copy your HTTP Trigger function URL (it will be named differently from below):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new34.PNG" width="1000" height="542" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now paste the URL into your browser and everything is working as intended it will fire and connect to your Cosmos database and return JSON data:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop8_new35.PNG" width="1000" height="660" alt=""/></p>
+<p>&nbsp;</p>
+<p>With your HTTP Trigger function operating correctly as aboe, you can now test your IoT Hub Trigger function. To do this, run your simulated device app so that sensor values are sent to your IoT hub, the IoT Hub Trigger will fire each time a sensor value is received from the simulatd device app and store it in your IoT Hub. Next, load your HTTP Trigger function again in the browser (as shown in above screenshot) and check that the new sensor data has been stored and retrieved. Hopefully everything is working correctly and you have successfully published your IoT Hub Trigger function and HTTP Trigger function to Azure.</p>
+<p>&nbsp;</p>
+<h2>Publish your Web App</h2>
+<p>With the functions now published, the last cloud service to publish is the web app from workshop 7. As a reminder the web app you created and tested locally is below:</p>
+<p>&nbsp;</p>
+	<p><img src="images/workshop7_14.PNG" width="1000" height="540" alt=""/></p>
+	<p>Next, close your current VSC instance that has your function code open. Open it again and open the folder that contains your web app from workshop 7:</p>
+<p>&nbsp;</p>
+	<p><img src="images/workshop8_new36.PNG" width="500" height="350" alt=""/></p>
+	<p>&nbsp;</p>
+	<p>Open the <strong>index.cshtml</strong> file and replace the iframe src URL with the URL of your HTTP Trigger function. You were shown how to get the URL of your HTTP Trigger earlier in this workshop.</p>
+<p>&nbsp;</p>
+	<p><img src="images/workshop8_new37.PNG" width="900" height="551" alt=""/></p>
+	<p>&nbsp;</p>
+	<p>Next, o deploy your web app using the VSC Azure Tools extension:</p>
+<ol>
+	  <li>
+	    <p>In ViSCe, open the <a href="https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette" data-linktype="external"><strong>Command Palette</strong></a>, Ctrl+Shift+P.</p>
+      </li>
+	  <li>
+	    <p>Search for and select "Azure App Service: Deploy to Web App".</p>
+      </li>
+	  <li>
+	    <p>Respond to the prompts as follows:</p>
+	    <ul>
+	      <li>
+	        <p>Select <strong>MyFirstAzureWebApp</strong> as the folder to deploy or select the name of the folder your web app is in/</p>
+	      </li>
+	      <li>
+	        <p>Select <strong>Add Config</strong> when prompted.</p>
+	      </li>
+	      <li>
+	        <p>If prompted, sign in to your existing Azure account.</p>
+          </li>
+	      <li>
+	        <p>Select your Azxure <strong>Subscription</strong> if prompted.</p>
+	      </li>
+	      <li>
+	        <p>Select <strong>Create new Web App... Advanced</strong>.</p>
+	      </li>
+	      <li>
+	        <p>For <strong>Enter a globally unique name</strong>, use a name that's unique across all of Azure (<em>valid characters are a-z, 0-9, and -</em>). A good pattern is to use a combination of your company name and an app identifier.</p>
+	      </li>
+	      <li>
+	        <p>Select the resourcer group from the list that you created previously, the same one your IoT hub is deployed to.</p>
+	      </li>
+	      <li>
+	        <p>When prompted to <strong>Select a runtime stack</strong>:
+	        </p>
+	        <ul>
+	          <li>
+	            <p>For <em>.NET Core 3.1</em>, select <strong>.NET Core 3.1 (LTS)</strong></p>
+	          </li>
+            </ul>
+	        <p>Select the <strong>Windows</strong> operating system</p>
+          </li>
+	      <li>
+	        <p>Select the<strong> F1 (free) App Service plan</strong>, that appears in the list (you created this earlier in the workshop), you should not need to create another one</p>
+	      </li>
+	      <li>
+	        <p>Select <strong>Skip for now</strong> for the Application Insights resource.</p>
+	        <p>&nbsp;</p>
+          </li>
+        </ul>
+      </li>
+</ol>
+	<p>Your web app will now begin to be deployed and published to Azure.. The below message may also pop up on bottom right of VSC, click Yes for this:</p>
+	<p>&nbsp;</p>
+	<p><img src="images/workshop8_new38.PNG" width="1000" height="332" alt=""/></p>
+	<p>&nbsp;</p>
+	<p>You can check your Web App has been published and browse it from VSC. Follow the screenshot below by right-clicking on the globe icon for your published website and selecting browse:</p>
+<p>&nbsp;</p>
+	<p><img src="images/workshop8_new40.PNG" width="800" height="892" alt=""/></p>
+	<p>&nbsp;</p>
+	<p><img src="images/workshop8_new41.PNG" width="1109" height="581" alt=""/></p>
+	<p>Your web app should be fully published!</p>
+	<p>You can easily make changs to your web app and publish them quickly. For example, open the index.cshtml file in VSC and change the text that says 'Last Sensor Value' to 'First Sensor Value' and save (File&gt;Save) the page:</p>
+<p>&nbsp;</p>
+	<p><img src="images/workshop8_new42.PNG" width="1200" height="773" alt=""/></p>
+	<p>&nbsp;</p>
+	<p>Now select the Azure options from the side panel ni VSC and right-click your web app and select 'Deploy to Web App'. This will overwrite your existnig web app code on Azure and include any changes you have made. When deployed, right-click your web app and select browse and you should see the text has been updated:</p>
+<p>&nbsp;</p>
+	<p><img src="images/workshop8_new44.PNG" width="1052" height="548" alt=""/></p>
+	<p>&nbsp;</p>
+<p>That is all the tasks for this week, please use your time to ensure you fully understand the concepts prsented and start making progress on your assessment work.</p>
+	<p>&nbsp;</p>
+
+	<p>&nbsp;</p>
+</body>
+	 &lt;script type="text/javascript"&gt;
+      		 SyntaxHighlighter.all()
+      	</script>
+</html>
