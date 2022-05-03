@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<link href="cloud.css" rel="stylesheet" type="text/css">
+	  	   
+ <link rel="stylesheet" href="highlight/styles/default.css">
+<script src="highlight/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+
+<body>
+<h1>Workshop 9 - DevOps Task for Load Testing</h1>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new1.PNG" width="800" height="461" alt=""/></p>
+<p>&nbsp;</p>
+<p>In this week's workshop you will learn how to carry out an important DevOps task for load testing your Azure HTTP Trigger function. Load testing cloud services is an important practice and demonstrates the performance and reliabuility characteristics of your service.</p>
+<p>This is the last workhop that can contribute toward your assessment work. It does not involve building any cloud services, instead it is focused on setting up and running load-testing on your HTTP Trigger function.</p>
+<p>&nbsp;</p>
+<h2>Loader.io service</h2>
+<p>In order to be able to load test a cloud service, you need another service that can repeatedly send GET or other HTTP queries to it. The load testing can be configured for a specific number of users hitting your function over a specififed time. For example you may want to test your service with 1000 simulated users of a period of 60 seconds. When such a test completes you will have a graph of your services performance, which includes latency (response time) and any dropped requests. To get started, signup for the free version of the loader.io service <a href="https://loader.io/2>herehere.</p>
+<p><strong>IoT Hub (Workshop 3)</strong></p>
+<p><strong>Cosmos Database (Workshop 5)</strong></p>
+<p>To ensure this is the case, login to your Azure subscription <a href="https://portal.azure.com/#home">her</a><a href="https://loader.io/2>herehere.</p>
+<p><strong>IoT Hub (Workshop 3)</strong></p>
+<p><strong>Cosmos Database (Workshop 5)</strong></p>
+<p>To ensure this is the case, login to your Azure subscription <a href="https://portal.azure.com/#home">e:</a></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new2.PNG" width="900" height="434" alt=""/></p>
+<p>Now you need to add the URL of your function as the target to load test against. If you aren't already, sign in to your loader.io account you just created then select the <strong>Target host</strong>s tab and then<strong> New Host</strong> button:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new3.PNG" width="1000" height="391" alt=""/></p>
+<p>&nbsp;</p>
+<p>You will be presented with a box highlighted below that you need to paste your URL function into:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new4.PNG" width="1000" height="451" alt=""/></p>
+<p>Leave the loader.iop web page open for now. To get your function URL, login into the Azure portal <a href="https://portal.azure.com/#home">here </a> and go to All Resources and select your function app from the list (it may be named differently from below):</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new5.PNG" width="1000" height="532" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now follow the steps below to copy your function URL and paste it to a text file to use later:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new6.PNG" width="900" height="609" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new7.PNG" width="900" height="471" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new8.PNG" width="900" height="551" alt=""/></p>
+<p>&nbsp;</p>
+<p>Copy on the main URL part of your function url, without the path, similar to below so it ends in .net:</p>
+<p>https://defosterfunctions.azurewebsites.net</p>
+<p>Now paste your URL into the loader.io web page you left open earlier then click the verify button:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new9.PNG" width="900" height="458" alt=""/></p>
+<p>&nbsp;</p>
+<p>You will now be presented with a unique verification token as highlighted below. Please copy this token to a text file as you will need to use it in your HTTP trigger code. The verification token is designed to stop you from being able to perform load testing on services that you do not own and helps to stop DDOS attacks.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new10.PNG" width="900" height="611" alt=""/></p>
+<p>&nbsp;</p>
+<p>OK, now leave the loader.io page open and open your HTTP Trigger project code in VSC:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new11.PNG" width="1000" height="691" alt=""/></p>
+<p>&nbsp;</p>
+<p>With <a href="https://docs.microsoft.com/en-us/azure/azure-functions/functions-proxies">Azure Functions Proxies</a>, you can specify endpoints in your Function App which aren&rsquo;t handled by Functions directly but redirect the requests to other endpoints or respond with a hard-coded response. The latter is exactly what we need. </p>
+<p>Create a <strong>proxies.json </strong>file in the root folder of your Function App in VSC:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new12.PNG" width="431" height="348" alt=""/></p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new13.PNG" width="379" height="603" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now  paste in the code below in the proxies.json file:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+{
+    "$schema": "http://json.schemastore.org/proxies",
+    "proxies": {
+        "loaderio-verifier": {
+            "matchCondition": {
+                "methods": [ "GET" ],
+                "route": "/"
+            },
+            "responseOverrides": {
+                "response.body": "",
+                "response.headers.Content-Type": "text/plain"
+            }
+        }
+    }
+}
+
+</pre>
+<p>Now you will need to add the verify token you pasted into a text file earlier, add the token to the route and response.body values as shown below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new14.PNG" width="949" height="578" alt=""/></p>
+<p>&nbsp;</p>
+<p>Nearly there!</p>
+<p>Open the <strong>IoTHubTrigger.csproj</strong> file as shown below and add the below code snippet:</p>
+<p>&nbsp;</p>
+<pre><code class="cs">
+&lt;None Update="proxies.json">
+   &lt;CopyToOutputDirectory>PreserveNewest&lt;/CopyToOutputDirectory>
+&lt;/None>
+
+</pre>
+<p><img src="images/workshop9_new15.PNG" width="1200" height="646" alt=""/></p>
+<p>&nbsp;</p>
+<p>Next, you need to republish your function so the token you added is part of your published code. You will then be able to verify the token and run load balancing tests on your function.</p>
+<p>As you already have a function app deployed with your HTTP Trigger, you are simply going to overwrite the code and not create a brand new function app:</p>
+<p>You will need to be signed into Azure from within VSC for this, please refer to part 3 of workshop 1 on how to do this:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new16.PNG" width="775" height="1080" alt=""/></p>
+<p>&nbsp;</p>
+<p>You now select your existing Function App that is already deployed on Azure, doing this means your function code will simply overwrite the code currently deployed:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new17.PNG" width="864" height="240" alt=""/></p>
+<p>&nbsp;</p>
+<p>Select yes to deploy and overwrite:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new18.PNG" width="936" height="383" alt=""/></p>
+<p>&nbsp;</p>
+<p>Your updated HTTP Trigger code will now be deployed to Azure, it should only take a minute or two:</p>
+<p><img src="images/workshop9_new19.PNG" width="648" height="218" alt=""/></p>
+<p>&nbsp;</p>
+<p>Now return back your the loader.io web page you left open and click the verify button to see that the token has been deployed as part of your function. You should see a green box that states verification has passed. Click the New Test button when ready:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new20.PNG" width="1000" height="749" alt=""/></p>
+<p><img src="images/workshop9_new21.PNG" width="1000" height="684" alt=""/></p>
+<p>When you click the New Test button, you will configure a load test for your HTTP Trigger function that must include the function URL and the path component from the URL.  Before you do anything you will see the test configuration window as below:</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new22.PNG" width="1000" height="877" alt=""/></p>
+<p>&nbsp;</p>
+<p>To keep things simple we will leave most of the settings as they are. The default settings will basically create a load test that uses 250 simulated clients to call your HTTP Trigger function over the course of 1 minute. This essentially aims to emulate 250 users calling your function over the period of 1 minute. You only need to add two pieces of information to the configuration window. First, give your test a name, second you need to fill the Path part of the URL. The path of your HTTP Trigger is whatever follows the basic part of your URL:</p>
+<p><strong>Full funtion URL</strong>: https://defosterfunctions.azurewebsites.net/api/GetTemperature?</p>
+<p><strong>Host URL:</strong> https://defosterfunctions.azurewebsites.net</p>
+<p><strong>Path:</strong> api/GetTemperature?</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new23.PNG" width="900" height="875" alt=""/></p>
+<p>&nbsp;</p>
+<p>When you click the <strong>Run Test</strong> button your load test will first take a moment to prepare then it will launch 250 clients to call your HTTP Trigger function over a 1 minute period. The graph and stats will show you the response times and any timeouts. Timeouts are usually an indication the service has been overloaded. Hopefully your graph and response times may look similar to below.</p>
+<p>&nbsp;</p>
+<p><img src="images/workshop9_new24.PNG" width="1000" height="728" alt=""/></p>
+<p>&nbsp;</p>
+<p>You can experiment with running the test with 500 clients and view any differences in response times and the graph. Bear in mind you may reach some hard limits with your HTTP Trigger as it is currently deployed under the free tier.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+	<p>&nbsp;</p>
+	<p>&nbsp;</p>
+</body>
+	 &lt;script type="text/javascript"&gt;
+      		 SyntaxHighlighter.all()
+      	</script>
+</html>
